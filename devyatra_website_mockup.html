@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DevYatra — Temple Travel</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --color-bg: #ffffff;
+    --color-bg-secondary: #f7f5f0;
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #6b6560;
+    --color-border: rgba(0,0,0,0.12);
+    --color-border-hover: rgba(0,0,0,0.25);
+    --color-amber: #BA7517;
+    --color-amber-light: #FAEEDA;
+    --color-amber-mid: #FAC775;
+    --color-amber-dark: #854F0B;
+    --color-amber-deep: #412402;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+  body { font-family: Georgia, 'Times New Roman', serif; background: #f0ece4; display: flex; justify-content: center; padding: 32px 16px; min-height: 100vh; }
+  .frame { background: var(--color-bg); border-radius: 16px; border: 0.5px solid var(--color-border); overflow: hidden; max-width: 680px; width: 100%; box-shadow: 0 4px 40px rgba(0,0,0,0.1); }
+
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 32px; border-bottom: 0.5px solid var(--color-border); background: var(--color-bg); }
+  .logo { display: flex; align-items: center; gap: 8px; }
+  .logo-icon { width: 32px; height: 32px; background: var(--color-amber); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .logo-text { font-size: 18px; font-weight: 600; color: var(--color-text-primary); font-family: Georgia, serif; }
+  .logo-sub { font-size: 10px; color: var(--color-text-secondary); letter-spacing: 1px; text-transform: uppercase; font-family: system-ui, sans-serif; }
+  .nav-links { display: flex; gap: 24px; font-size: 13px; color: var(--color-text-secondary); font-family: system-ui, sans-serif; }
+  .nav-links span { cursor: pointer; transition: color 0.15s; }
+  .nav-links span:hover { color: var(--color-text-primary); }
+  .nav-cta { background: var(--color-amber); color: #fff; border: none; padding: 8px 18px; border-radius: var(--radius-md); font-size: 13px; cursor: pointer; font-weight: 500; font-family: system-ui, sans-serif; }
+
+  .hero { background: linear-gradient(135deg, #FAEEDA 0%, #FAC775 60%, #EF9F27 100%); padding: 48px 32px 40px; }
+  .hero-tag { display: inline-block; background: #fff; color: var(--color-amber); font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; letter-spacing: 0.3px; font-family: system-ui, sans-serif; }
+  .hero-title { font-size: 28px; font-weight: 400; color: var(--color-amber-deep); line-height: 1.3; max-width: 420px; }
+  .hero-title em { color: var(--color-amber-dark); font-style: italic; }
+  .hero-sub { font-size: 14px; color: #633806; margin-top: 8px; max-width: 380px; line-height: 1.6; font-family: system-ui, sans-serif; }
+  .tab-row { display: flex; gap: 0; margin-bottom: 20px; background: rgba(255,255,255,0.5); border-radius: var(--radius-md); padding: 4px; width: fit-content; }
+  .tab { padding: 7px 16px; font-size: 13px; border-radius: 6px; cursor: pointer; color: #633806; font-family: system-ui, sans-serif; transition: all 0.15s; }
+  .tab.active { background: #fff; color: var(--color-text-primary); font-weight: 500; border: 0.5px solid rgba(0,0,0,0.1); }
+  .hero-search { margin-top: 24px; background: var(--color-bg); border-radius: var(--radius-lg); padding: 16px 20px; display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; border: 0.5px solid var(--color-border); max-width: 640px; }
+  .search-field { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 120px; }
+  .search-field label { font-size: 10px; color: var(--color-text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; font-family: system-ui, sans-serif; }
+  .search-field select, .search-field input { border: 0.5px solid var(--color-border); background: var(--color-bg-secondary); border-radius: var(--radius-md); padding: 8px 10px; font-size: 13px; color: var(--color-text-primary); outline: none; font-family: system-ui, sans-serif; }
+  .search-btn { background: var(--color-amber); color: #fff; border: none; padding: 10px 20px; border-radius: var(--radius-md); font-size: 13px; cursor: pointer; font-weight: 500; white-space: nowrap; font-family: system-ui, sans-serif; }
+
+  .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 0.5px solid var(--color-border); border-bottom: 0.5px solid var(--color-border); }
+  .stat-item { padding: 20px 16px; text-align: center; border-right: 0.5px solid var(--color-border); }
+  .stat-item:last-child { border-right: none; }
+  .stat-num { font-size: 22px; font-weight: 400; color: var(--color-amber); font-family: Georgia, serif; }
+  .stat-lbl { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; font-family: system-ui, sans-serif; }
+
+  .section { padding: 28px 32px; }
+  .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .section-title { font-size: 16px; font-weight: 400; color: var(--color-text-primary); font-family: Georgia, serif; }
+  .see-all { font-size: 12px; color: var(--color-amber); cursor: pointer; font-family: system-ui, sans-serif; }
+
+  .temples-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .temple-card { border-radius: var(--radius-lg); overflow: hidden; border: 0.5px solid var(--color-border); cursor: pointer; background: var(--color-bg); transition: border-color 0.15s; }
+  .temple-card:hover { border-color: var(--color-amber); }
+  .temple-img { height: 80px; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+  .temple-info { padding: 10px 12px; }
+  .temple-name { font-size: 12px; font-weight: 500; color: var(--color-text-primary); font-family: system-ui, sans-serif; }
+  .temple-loc { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; font-family: system-ui, sans-serif; }
+  .temple-badge { font-size: 10px; padding: 2px 8px; border-radius: 20px; background: var(--color-amber-light); color: var(--color-amber-dark); margin-top: 6px; display: inline-block; font-family: system-ui, sans-serif; font-weight: 500; }
+
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .service-card { border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); padding: 16px; background: var(--color-bg); cursor: pointer; transition: border-color 0.15s; }
+  .service-card:hover { border-color: var(--color-amber); }
+  .service-icon { width: 36px; height: 36px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; font-size: 16px; }
+  .service-name { font-size: 14px; font-weight: 500; color: var(--color-text-primary); font-family: system-ui, sans-serif; }
+  .service-desc { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; line-height: 1.5; font-family: system-ui, sans-serif; }
+  .service-count { font-size: 11px; color: var(--color-amber); margin-top: 8px; font-weight: 600; font-family: system-ui, sans-serif; }
+
+  .divider { height: 0.5px; background: var(--color-border); margin: 0 32px; }
+
+  .listings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .listing-card { border: 0.5px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-bg); overflow: hidden; cursor: pointer; transition: border-color 0.15s; }
+  .listing-card:hover { border-color: var(--color-amber); }
+  .listing-img { height: 90px; display: flex; align-items: center; justify-content: center; font-size: 36px; }
+  .listing-body { padding: 12px; }
+  .listing-type { font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; color: var(--color-text-secondary); font-family: system-ui, sans-serif; }
+  .listing-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-top: 2px; font-family: system-ui, sans-serif; }
+  .listing-meta { font-size: 11px; color: var(--color-text-secondary); margin-top: 4px; font-family: system-ui, sans-serif; }
+  .listing-price { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+  .listing-rate { font-size: 14px; font-weight: 500; color: var(--color-text-primary); font-family: system-ui, sans-serif; }
+  .listing-rate span { font-size: 11px; font-weight: 400; color: var(--color-text-secondary); }
+  .listing-stars { font-size: 11px; color: var(--color-amber); }
+  .book-btn { font-size: 11px; background: var(--color-amber-light); color: var(--color-amber-dark); border: none; padding: 5px 12px; border-radius: var(--radius-md); cursor: pointer; font-weight: 600; font-family: system-ui, sans-serif; }
+
+  .footer { padding: 20px 32px; background: var(--color-bg-secondary); border-top: 0.5px solid var(--color-border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .footer-links { display: flex; gap: 20px; font-size: 12px; color: var(--color-text-secondary); font-family: system-ui, sans-serif; }
+  .footer-note { font-size: 11px; color: var(--color-text-secondary); font-family: system-ui, sans-serif; }
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <nav class="nav">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2L11 7H16L12 10.5L13.5 16L9 13L4.5 16L6 10.5L2 7H7L9 2Z" fill="white"/></svg>
+      </div>
+      <div>
+        <div class="logo-text">DevYatra</div>
+        <div class="logo-sub">Temple Travel</div>
+      </div>
+    </div>
+    <div class="nav-links">
+      <span>Temples</span>
+      <span>Hotels</span>
+      <span>Cars</span>
+      <span>Cafes</span>
+    </div>
+    <button class="nav-cta">Sign in</button>
+  </nav>
+
+  <section class="hero">
+    <div class="tab-row">
+      <div class="tab active">Hotels</div>
+      <div class="tab">Car rental</div>
+      <div class="tab">Cafes</div>
+      <div class="tab">Packages</div>
+    </div>
+    <div class="hero-tag">Sacred journeys, simplified</div>
+    <h1 class="hero-title">Book everything around your <em>temple visit</em></h1>
+    <p class="hero-sub">Hotels, cars, and cafes near 500+ temples across India — all in one place.</p>
+    <div class="hero-search">
+      <div class="search-field">
+        <label>Temple / City</label>
+        <select>
+          <option>Varanasi, Kashi Vishwanath</option>
+          <option>Tirupati, Balaji Temple</option>
+          <option>Shirdi, Sai Baba</option>
+          <option>Vrindavan, Banke Bihari</option>
+          <option>Amritsar, Golden Temple</option>
+          <option>Puri, Jagannath Temple</option>
+        </select>
+      </div>
+      <div class="search-field">
+        <label>Check-in</label>
+        <input type="date" />
+      </div>
+      <div class="search-field">
+        <label>Guests</label>
+        <select>
+          <option>2 pilgrims</option>
+          <option>1 pilgrim</option>
+          <option>4 pilgrims</option>
+          <option>Family (6+)</option>
+        </select>
+      </div>
+      <button class="search-btn">Search →</button>
+    </div>
+  </section>
+
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num">500+</div><div class="stat-lbl">Temples covered</div></div>
+    <div class="stat-item"><div class="stat-num">12K+</div><div class="stat-lbl">Hotels listed</div></div>
+    <div class="stat-item"><div class="stat-num">3.2K+</div><div class="stat-lbl">Cars available</div></div>
+    <div class="stat-item"><div class="stat-num">8K+</div><div class="stat-lbl">Cafes &amp; dhabas</div></div>
+  </div>
+
+  <section class="section">
+    <div class="section-head">
+      <div class="section-title">Popular pilgrimages</div>
+      <div class="see-all">See all →</div>
+    </div>
+    <div class="temples-grid">
+      <div class="temple-card">
+        <div class="temple-img" style="background:#FAEEDA;">🕌</div>
+        <div class="temple-info">
+          <div class="temple-name">Kashi Vishwanath</div>
+          <div class="temple-loc">Varanasi, UP</div>
+          <div class="temple-badge">Jyotirlinga</div>
+        </div>
+      </div>
+      <div class="temple-card">
+        <div class="temple-img" style="background:#EAF3DE;">⛪</div>
+        <div class="temple-info">
+          <div class="temple-name">Tirupati Balaji</div>
+          <div class="temple-loc">Tirupati, AP</div>
+          <div class="temple-badge">Divya Desam</div>
+        </div>
+      </div>
+      <div class="temple-card">
+        <div class="temple-img" style="background:#E1F5EE;">🛕</div>
+        <div class="temple-info">
+          <div class="temple-name">Sai Baba Shirdi</div>
+          <div class="temple-loc">Shirdi, MH</div>
+          <div class="temple-badge">Top rated</div>
+        </div>
+      </div>
+      <div class="temple-card">
+        <div class="temple-img" style="background:#FAC775;">🏛</div>
+        <div class="temple-info">
+          <div class="temple-name">Golden Temple</div>
+          <div class="temple-loc">Amritsar, PB</div>
+          <div class="temple-badge">Gurudwara</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="section-head">
+      <div class="section-title">Book by service</div>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon" style="background:#FAEEDA;">🏨</div>
+        <div class="service-name">Temple hotels</div>
+        <div class="service-desc">Dharamshalas, budget stays &amp; resorts near sacred sites</div>
+        <div class="service-count">12,400+ options</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon" style="background:#E1F5EE;">🚗</div>
+        <div class="service-name">Car rental</div>
+        <div class="service-desc">AC cabs, tempo travellers &amp; self-drive for yatra routes</div>
+        <div class="service-count">3,200+ cars</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon" style="background:#EAF3DE;">☕</div>
+        <div class="service-name">Satvik cafes</div>
+        <div class="service-desc">Pure veg eateries, prasad thalis &amp; chai dhabas nearby</div>
+        <div class="service-count">8,600+ spots</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="section-head">
+      <div class="section-title">Trending near Varanasi</div>
+      <div class="see-all">See all →</div>
+    </div>
+    <div class="listings-grid">
+      <div class="listing-card">
+        <div class="listing-img" style="background:#FAEEDA;">🏨</div>
+        <div class="listing-body">
+          <div class="listing-type">Hotel</div>
+          <div class="listing-name">Hotel Ganges View</div>
+          <div class="listing-meta">0.3 km from Kashi Vishwanath</div>
+          <div class="listing-price">
+            <div><div class="listing-rate">₹1,850 <span>/ night</span></div><div class="listing-stars">★ 4.6</div></div>
+            <button class="book-btn">Book</button>
+          </div>
+        </div>
+      </div>
+      <div class="listing-card">
+        <div class="listing-img" style="background:#E6F1FB;">🚗</div>
+        <div class="listing-body">
+          <div class="listing-type">Car rental</div>
+          <div class="listing-name">Swift Dzire AC</div>
+          <div class="listing-meta">Varanasi pickup · 4 seats</div>
+          <div class="listing-price">
+            <div><div class="listing-rate">₹1,200 <span>/ day</span></div><div class="listing-stars">★ 4.8</div></div>
+            <button class="book-btn">Book</button>
+          </div>
+        </div>
+      </div>
+      <div class="listing-card">
+        <div class="listing-img" style="background:#EAF3DE;">☕</div>
+        <div class="listing-body">
+          <div class="listing-type">Cafe</div>
+          <div class="listing-name">Pehelwan Lassi</div>
+          <div class="listing-meta">Dashashwamedh Ghat, 50m</div>
+          <div class="listing-price">
+            <div><div class="listing-rate">₹60 <span>avg</span></div><div class="listing-stars">★ 4.9</div></div>
+            <button class="book-btn">View</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="logo">
+      <div class="logo-icon" style="width:26px;height:26px;">
+        <svg width="12" height="12" viewBox="0 0 18 18" fill="none"><path d="M9 2L11 7H16L12 10.5L13.5 16L9 13L4.5 16L6 10.5L2 7H7L9 2Z" fill="white"/></svg>
+      </div>
+      <div style="font-size:13px;font-weight:600;font-family:Georgia,serif;color:#1a1a1a;">DevYatra</div>
+    </div>
+    <div class="footer-links">
+      <span>About</span><span>Contact</span><span>Privacy</span><span>Help</span>
+    </div>
+    <div class="footer-note">© 2026 DevYatra · Made with ❤ for pilgrims</div>
+  </footer>
+
+</div>
+</body>
+</html>
